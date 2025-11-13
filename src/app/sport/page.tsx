@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { generateMetadata as genMeta, generateSlug, baseUrl } from '@/lib/seo'
 import ActivityCardModern from '@/components/ActivityCardModern'
 
+// Force dynamic rendering to avoid DB access at build time
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = genMeta({
   title: 'Activités Sportives à Toulouse - Tous les Clubs et Associations',
   description: 'Découvrez tous les clubs sportifs et associations à Toulouse : football, basketball, tennis, arts martiaux, yoga, danse et plus encore. Trouvez votre activité sportive idéale.',

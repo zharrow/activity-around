@@ -12,6 +12,9 @@ interface PageProps {
   }
 }
 
+// Force dynamic rendering to avoid DB access at build time
+export const dynamic = 'force-dynamic'
+
 // Liste des quartiers principaux de Toulouse
 const neighborhoods = {
   'capitole': 'Capitole',
