@@ -1,21 +1,9 @@
 import { MetadataRoute } from 'next'
 import { prisma } from '@/lib/prisma'
+import { cities } from '@/data/cities'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 3600 // Revalidate every hour
-
-const neighborhoods = [
-  'capitole',
-  'carmes',
-  'saint-cyprien',
-  'compans-caffarelli',
-  'borderouge',
-  'rangueil',
-  'minimes',
-  'arnaud-bernard',
-  'jolimont',
-  'empalot',
-]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://activityaround.vercel.app'
@@ -53,15 +41,65 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  // Neighborhood pages
-  const neighborhoodPages = neighborhoods.map((neighborhood) => ({
-    url: `${baseUrl}/quartier/${neighborhood}`,
+  // City pages (20 French cities)
+  const cityPages = cities.map((city) => ({
+    url: `${baseUrl}/ville/${city.slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: 0.7,
+    priority: 0.8,
   }))
 
-  // Static pages
+  // Blog pages
+  const blogPages = [
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/blog/top-10-clubs-echecs-toulouse`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/blog/guide-debutant-arts-martiaux-toulouse`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/blog/meilleurs-quartiers-sport-toulouse`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/blog/activites-intellectuelles-toulouse`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
+  ]
+
+  // Other static pages
+  const otherPages = [
+    {
+      url: `${baseUrl}/activites`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/faq`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    },
+  ]
+
+  // Homepage
   const staticPages = [
     {
       url: baseUrl,
@@ -71,7 +109,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  return [...staticPages, ...categoryPages, ...neighborhoodPages, ...activityUrls]
+  return [
+    ...staticPages,
+    ...otherPages,
+    ...categoryPages,
+    ...cityPages,
+    ...blogPages,
+    ...activityUrls,
+  ]
 }
 
 function generateSlug(name: string): string {
